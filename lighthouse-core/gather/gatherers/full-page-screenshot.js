@@ -185,12 +185,12 @@ class FullPageScreenshot extends FRGatherer {
     const settings = context.settings;
     const lighthouseControlsEmulation = !settings.screenEmulation.disabled;
 
-    /**
-     * In case some other program is controlling emulation, remember what the device looks like now and reset after gatherer is done.
-     * If we're gathering with mobile screenEmulation on (overlay scrollbars, etc), continue to use that for this screenshot.
-     * @type {{width: number, height: number, deviceScaleFactor: number, mobile: boolean}}
-     */
-    const deviceMetrics = settings.screenEmulation;
+    // Make a copy so we don't modify the config settings.
+    /** @type {{width: number, height: number, deviceScaleFactor: number, mobile: boolean}} */
+    const deviceMetrics = {...settings.screenEmulation};
+
+    // In case some other program is controlling emulation, remember what the device looks like now and reset after gatherer is done.
+    // If we're gathering with mobile screenEmulation on (overlay scrollbars, etc), continue to use that for this screenshot.
     if (!lighthouseControlsEmulation) {
       const observedDeviceMetrics = await executionContext.evaluate(getObservedDeviceMetrics, {
         args: [],
